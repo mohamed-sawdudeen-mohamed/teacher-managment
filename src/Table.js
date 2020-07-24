@@ -1,9 +1,29 @@
-import React from "react";
+import React from 'react';
 
 class Table extends React.Component {
-  state = {};
-  render() {
+  state = {
+    search: '',
+  };
+
+  getTeachers = () => {
+    const { search } = this.state;
     const { teachers } = this.props;
+
+    if (search !== '') {
+      return teachers.filter((teacher) => {
+        return (
+          teacher.fName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+          teacher.lName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+          teacher.email.toLowerCase().indexOf(search.toLowerCase()) !== -1
+        );
+      });
+    }
+
+    return teachers;
+  };
+
+  render() {
+    const { search } = this.state;
     return (
       <div>
         <h4 className="text-light">Teacher Table</h4>
@@ -14,6 +34,10 @@ class Table extends React.Component {
             name="search"
             id="search"
             className="form-control"
+            value={search}
+            onChange={(e) => {
+              this.setState({ search: e.target.value });
+            }}
           />
         </div>
 
@@ -31,7 +55,7 @@ class Table extends React.Component {
             </thead>
 
             <tbody>
-              {teachers.map((teacher) => (
+              {this.getTeachers().map((teacher) => (
                 <tr>
                   <td>{teacher.fName}</td>
                   <td>{teacher.lName}</td>
@@ -39,7 +63,7 @@ class Table extends React.Component {
                   <td className="text-center">
                     <i
                       className={`fa fa-${
-                        teacher.gender === "m" ? "male" : "female"
+                        teacher.gender === 'm' ? 'male' : 'female'
                       }`}
                     />
                   </td>
